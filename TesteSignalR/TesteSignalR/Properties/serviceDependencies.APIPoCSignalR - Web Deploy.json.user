@@ -1,0 +1,48 @@
+{
+  "dependencies": {
+    "signalr1": {
+      "restored": true,
+      "restoreTime": "2021-01-12T23:29:53.1694868Z"
+    },
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2021-01-12T23:26:19.3986337Z"
+    },
+    "apis1": {
+      "restored": true,
+      "restoreTime": "2021-01-12T23:24:54.3050174Z"
+    }
+  },
+  "parameters": {
+    "apis1.resourceGroupName": {
+      "Name": "apis1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "PoCSignalR"
+    },
+    "signalr1.resourceGroupName": {
+      "Name": "signalr1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "PoCSignalR"
+    },
+    "mssql1.subscriptionId": {
+      "Name": "mssql1.subscriptionId",
+      "Type": "subscription",
+      "Value": "e6e684cd-b3fa-4fe7-83b0-6f9edaa914db"
+    },
+    "apis1.subscriptionId": {
+      "Name": "apis1.subscriptionId",
+      "Type": "subscription",
+      "Value": "e6e684cd-b3fa-4fe7-83b0-6f9edaa914db"
+    },
+    "signalr1.subscriptionId": {
+      "Name": "signalr1.subscriptionId",
+      "Type": "subscription",
+      "Value": "e6e684cd-b3fa-4fe7-83b0-6f9edaa914db"
+    },
+    "mssql1.resourceGroupName": {
+      "Name": "mssql1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "PoCSignalR"
+    }
+  }
+}

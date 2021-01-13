@@ -1,0 +1,30 @@
+version: '3'
+services:
+    front1:
+        build:
+            dockerfile: Dockerfile
+            context: .\frontend\
+        image: signalr-react:dev
+        container_name: front-signalr
+        ports:
+            - "3000:3000"
+        networks: 
+            - signalr-network
+        depends_on:
+            - "api"
+
+    api:
+        build:
+            dockerfile: TesteSignalR/Dockerfile
+            context: TesteSignalR
+        image: signalr-api:dev
+        container_name: api-signalr
+        ports:
+            - "5000:80"
+            - "5001:443"
+        networks: 
+            - signalr-network
+
+networks: 
+    signalr-network:
+        driver: bridge
