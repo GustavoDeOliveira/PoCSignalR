@@ -1,0 +1,24 @@
+.app {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0 auto;
+    display: block;
+}
+
+form {
+    background-color: #e5efef;
+}
+
+input {
+    padding: 0 .5em;
+    border: none;
+    background-color: #e0efef;
+}
+
+input:hover {
+    background-color: #c0cece;
+}
+
+h1 {
+    text-align: center;
+}
