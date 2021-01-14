@@ -38,9 +38,9 @@ namespace TesteSignalR.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UserRegistrationModel userModel)
+        public async Task<IActionResult> SignIn(UserRegistrationModel userModel)
         {
-            var response = new Response();
+            var response = new Response("Ocorreu um ou mais erros ao cadastrar o usuário.");
             if (ModelState.IsValid)
             {
                 if (string.IsNullOrEmpty(userModel.UserName)) userModel.UserName = userModel.Email;
@@ -50,6 +50,7 @@ namespace TesteSignalR.Controllers
                 var result = await _userManager.CreateAsync(user, userModel.Password);
                 if (result.Succeeded)
                 {
+                    response.Message = $"Usuário {userModel.UserName} cadastrado com sucesso!";
                     return Ok(response);
                 }
                 else

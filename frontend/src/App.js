@@ -13,8 +13,10 @@ export default class App extends Component {
         token: ''
         // updateInterval: null
     };
-    apiurl = "http://apipocsignalr.azurewebsites.net/api";
-    huburl = "http://apipocsignalr.azurewebsites.net/hub/coordinates";
+    baseurl = "https://apipocsignalr.azurewebsites.net/";
+    // baseurl = "http://localhost:5000/";
+    apiurl = this.baseurl + "api";
+    huburl = this.baseurl + "hub/coordinates";
     // updateTimems = 500;
 
     connectionBuilder = () => {
@@ -92,6 +94,32 @@ export default class App extends Component {
         }));
     };
 
+    handleSignIn = e => {
+        this.handleSubmit(e, (response => {
+            if (response.ok) {
+                response.json().then(json => alert(json.message));
+            } else {
+                response.json().then(json => {
+                    if (json.errors) {
+                        if (json.errors.forEach) {
+                            json.message += "\nErro(s):";
+                            json.errors.forEach(err => {
+                                json.message += "\n" + JSON.stringify(err);
+                            });
+                            alert(json.message);
+                        } else {
+                            json.title += "\nErro(s):";
+                            Object.values(json.errors).forEach(err => {
+                                json.title += "\n" + JSON.stringify(err);
+                            });
+                            alert(json.title);
+                        }
+                    }
+                });
+            }
+        }), true);
+    };
+
     handleLogout = e => {
         this.handleSubmit(e, (response) => {
             if (response.ok) {
@@ -110,7 +138,7 @@ export default class App extends Component {
         });
     };
 
-    handleSubmit = (e, action) => {
+    handleSubmit = (e, action, keepForm) => {
         e.preventDefault();
         const form = e.target;
         const headers = new Headers();
@@ -122,10 +150,11 @@ export default class App extends Component {
             headers,
             body: JSON.stringify(Object.fromEntries(new FormData(form).entries()))
         };
-        for (var i = 0; i < form.elements.length; i++) {
-            const el = form.elements[i];
-            if (el.type !== 'submit') el.value = "";
-        }
+        if (!keepForm)
+            for (var i = 0; i < form.elements.length; i++) {
+                const el = form.elements[i];
+                if (el.type !== 'submit') el.value = "";
+            }
         
         fetch(form.action, init).then(action).catch(reason => console.log(reason));
     }
@@ -172,12 +201,53 @@ export default class App extends Component {
         };
         const inputStyle = {
           margin: '0 .1em',
-          flex: '5'
+          flex: 5
+        };
+        const signInStyle = {...inputStyle, 
+            fontWeight: 'bold', 
+            fontSize: '20px',
+            padding: '.2em',
+            border: 'outset 2px',
+            borderRadius: '0 0 25% 25%'
         };
         return (
         <div className="app">
             <h1>Mouse Tracker</h1>
             {!this.state.token?
+              <div>
+                  <h3>Cadastro</h3>
+              <form onSubmit={this.handleSignIn} 
+                method="POST" 
+                action={this.apiurl + "/account/signin"}>
+                    <div style={formStyle}>
+                        <label htmlFor="user">Usuário: </label>
+                        <input required="required" style={{...inputStyle, flex: 7}} 
+                            type="text" name="userName" title="user"
+                            autoComplete="off"
+                            placeholder="Digite seu nome de Usuário" />
+                        <label htmlFor="target">Senha: </label>
+                        <input required="required" style={{...inputStyle, flex: 3}} 
+                            autoComplete="off"
+                            type="password" name="password"
+                            placeholder="Digite sua senha" />
+                    </div>
+                    <div style={formStyle}>
+                        <label htmlFor="email">Email: </label>
+                        <input required="required" style={{...inputStyle, flex: 7}} 
+                            autoComplete="off"
+                            type="text" name="email"
+                            placeholder="Digite seu e-mail" />
+                        <label htmlFor="confirmPassword">Confirmar Senha: </label>
+                        <input required="required" style={{...inputStyle, flex: 3}} 
+                            autoComplete="off"
+                            type="password" name="confirmPassword"
+                            placeholder="Confirme sua senha" />
+                    </div>
+                    <div style={formStyle}>
+                        <input style={signInStyle} type="submit" value="Cadastrar-se" />
+                    </div>
+              </form>
+              <h3>Entrar</h3>
               <form style={formStyle} 
                 onSubmit={this.handleLogin} 
                 method="POST" 
@@ -185,15 +255,18 @@ export default class App extends Component {
                 <label htmlFor="user">Usuário: </label>
                   <input required="required" style={{...inputStyle, flex: 7}} 
                   type="text" name="userName" title="user"
+                  autoComplete="off"
                   value={this.state.user} 
                   placeholder="Digite seu nome de Usuário"
                   onChange={this.handleChange} />
                 <label htmlFor="target">Senha: </label>
                   <input required="required" style={{...inputStyle, flex: 3}} 
                   type="password" name="password"
+                  autoComplete="off"
                   placeholder="Digite sua senha" />
                   <input style={inputStyle} type="submit" value="Entrar" />
               </form>
+              </div>
               : //Se houver um token, usuário está logado. Mostrar botão de logout
               <form style={formStyle} 
                 onSubmit={this.handleLogout} 

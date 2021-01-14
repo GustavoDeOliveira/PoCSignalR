@@ -7,7 +7,11 @@ namespace TesteSignalR.Models
 {
     public class Response
     {
-        public string Message { get; set; } = "Operação realizada com sucesso.";
+        public Response(string message = "Operação realizada com sucesso.")
+        {
+            Message = message;
+        }
+        public string Message { get; set; }
         public IEnumerable<string> Errors { get; set; } = Enumerable.Empty<string>();
     }
 }

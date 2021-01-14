@@ -69,15 +69,23 @@ namespace TesteSignalR
 
             services.AddCors(options =>
             {
-                options.AddPolicy("ClientPermission", policy =>
+                options.AddPolicy("DevCors", policy =>
                 {
-                    string[] origins = Configuration.GetValue<string[]>("AllowedOrigins");
                     policy.AllowAnyHeader()
-                            .WithMethods("GET", "POST")
-                            .AllowCredentials();
-                    if (origins != null && origins.Length > 0)
-                        policy.WithOrigins(origins);
-                    else policy.WithOrigins("http://localhost:3000");
+                            .AllowAnyMethod()
+                            .AllowCredentials()
+                            .WithOrigins("http://localhost:3000",
+                                         "http://localhost:5000",
+                                         "http://apipocsignalr.azurewebsites.net");
+                });
+                options.AddPolicy("ProdCors", policy =>
+                {
+                    policy.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials()
+                            .WithOrigins("https://localhost:5001",
+                                         "https://storagepocsignalr.z21.web.core.windows.net",
+                                         "https://apipocsignalr.azurewebsites.net");
                 });
             });
 
@@ -155,12 +163,14 @@ namespace TesteSignalR
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            string corsProfile = "ProdCors";
             if (env.IsDevelopment())
             {
-            }
+                corsProfile = "DevCors";
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "TesteSignalR v1"));
+            }
 
             //app.UseHttpsRedirection();
 
@@ -170,7 +180,7 @@ namespace TesteSignalR
 
             app.UseAuthorization();
 
-            app.UseCors("ClientPermission");
+            app.UseCors(corsProfile);
 
             app.UseEndpoints(endpoints =>
             {
